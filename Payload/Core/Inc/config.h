@@ -8,9 +8,9 @@
 #ifndef INC_CONFIG_H_
 #define INC_CONFIG_H_
 
-#define VERSION_INFO ((char *)"Payload Version 0.3 Beta")
+#define VERSION_INFO ((char *)"Payload Version 0.5 Beta")
 
-#define CALL_SIGN ((char *)"de wb9coy")
+#define CALL_SIGN ((char *)"W6SUN")
 
 #define TRANSMIT_FREQUENCY  434.200f //Mhz
 //#define TRANSMIT_FREQUENCY  434.2022f //Mhz

@@ -13,10 +13,9 @@
 
 #define MTU_SIZE                  64
 
-#define BUF_DATA_SIZE	          58
-
+#define SENSOR_BUF_DATA_SIZE	  58
 #define GPS_BUF_DATA_SIZE		  62
-#define IMG_BUF_DATA_SIZE		  32
+#define IMG_BUF_DATA_SIZE		  56
 #define CALL_SIGN_SIZE		      12
 #define INFO_DATA_SIZE		      32
 
@@ -41,7 +40,7 @@
 struct __attribute__((__packed__)) HABPacketImageStartType
 {
 	uint8_t  packetType;
-	uint16_t imageFileID;
+	uint8_t  imageFileID;
 	uint32_t fileSize;
 	uint16_t crc16;
 	uint8_t  codeword[NPAR];
@@ -50,7 +49,7 @@ struct __attribute__((__packed__)) HABPacketImageStartType
 struct __attribute__((__packed__)) HABPacketImageEndType
 {
 	uint8_t  packetType;
-	uint16_t imageFileID;
+	uint8_t  imageFileID;
 	uint16_t crc16;
 	uint8_t  codeword[NPAR];
 };
@@ -58,7 +57,7 @@ struct __attribute__((__packed__)) HABPacketImageEndType
 struct __attribute__((__packed__)) HABPacketImageDataType
 {
 	uint8_t   packetType;
-	uint16_t  imageFileID;
+	uint8_t   imageFileID;
 	uint16_t  imageSeqnum;
 	uint8_t   imageDataLen;
 	uint8_t   imageData[IMG_BUF_DATA_SIZE];
@@ -77,7 +76,7 @@ struct __attribute__((__packed__)) HABPacketSensorDataType
 {
 	uint8_t   packetType;
 	uint8_t   sensorDataLen;
-	uint8_t   sensorData[BUF_DATA_SIZE];
+	uint8_t   sensorData[SENSOR_BUF_DATA_SIZE];
 };
 
 struct __attribute__((__packed__)) HABPacketInfoDataType
@@ -109,9 +108,9 @@ struct __attribute__((__packed__)) HABPacketBattInfoDataType
 struct __attribute__((__packed__)) HABPacketIntTempInfoDataType
 {
 	uint8_t   packetType;
-	uint8_t   intTempInfoData;
+	int8_t    intTempInfoData;
 	uint16_t  crc16;
-	uint8_t  codeword[NPAR];
+	uint8_t   codeword[NPAR];
 };
 
 #endif /* INC_PACKETDEFS_H_ */

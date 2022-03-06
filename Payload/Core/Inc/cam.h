@@ -15,7 +15,7 @@ extern "C" {
 #include "ecc.h"
 #include "stm32f1xx_hal.h"
 
-#define CAM_DATA_LEN  32
+#define CAM_DATA_LEN  56
 #define CAM_HEADER_LEN 5
 #define CAM_FOOTER_LEN 5
 
