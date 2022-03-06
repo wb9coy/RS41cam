@@ -37,7 +37,7 @@ int processInternalTemp(struct rscode_driver *rsDriver)
 	if(HAL_Status == HAL_OK)
 	{
 	  // Convert ADC value to signed temperature value. Deg F
-	  HABPacketIntTempInfoData.intTempInfoData = (uint8_t)-60 + (int16_t)adcInternalTemperatureVal;
+	  HABPacketIntTempInfoData.intTempInfoData = (int8_t)-60 + (int16_t)adcInternalTemperatureVal;
 	  HABPacketIntTempInfoData.packetType  = INT_TEMP;
 	  len = sizeof(HABPacketIntTempInfoData)-sizeof(HABPacketIntTempInfoData.crc16)-NPAR;
 	  HABPacketIntTempInfoData.crc16 = crc_16((unsigned char *)&HABPacketIntTempInfoData,len);

@@ -41,134 +41,134 @@ void sendCharacter(char c)
 {
 	switch(c)
 	{
-		case 'a':
+		case 'A':
 			dit();
 			dah();
 			break;
-		case 'b':
+		case 'B':
 			dah();
-			dit();
-			dit();
-			dit();
-			break;
-		case 'c':
-			dah();
-			dit();
-			dah();
-			dit();
-			break;
-		case 'd':
-			dah();
-			dit();
-			dit();
-			break;
-		case 'e':
-			dit();
-			break;
-		case 'f':
-			dit();
-			dit();
-			dah();
-			dit();
-		case 'g':
-			dah();
-			dah();
-			dit();
-			break;
-		case 'h':
-			dit();
 			dit();
 			dit();
 			dit();
 			break;
-		case 'i':
-			dit();
-			dit();
-			break;
-		case 'j':
-			dit();
+		case 'C':
 			dah();
-			dah();
-			dah();
-			break;
-		case 'k':
-			dah();
-			dit();
-			dah();
-			break;
-		case 'l':
-			dit();
-			dah();
-			dit();
-			dit();
-			break;
-		case 'm':
-			dah();
-			dah();
-			break;
-		case 'n':
-			dah();
-			dit();
-			break;
-		case 'o':
-			dah();
-			dah();
-			dah();
-			break;
-		case 'p':
-			dit();
-			dah();
-			dah();
-			dit();
-			break;
-		case 'q':
-			dah();
-			dah();
-			dit();
-			dah();
-			break;
-		case 'r':
 			dit();
 			dah();
 			dit();
 			break;
-		case 's':
+		case 'D':
+			dah();
+			dit();
+			dit();
+			break;
+		case 'E':
+			dit();
+			break;
+		case 'F':
+			dit();
+			dit();
+			dah();
+			dit();
+		case 'G':
+			dah();
+			dah();
+			dit();
+			break;
+		case 'H':
+			dit();
 			dit();
 			dit();
 			dit();
 			break;
-		case 't':
-			dah();
+		case 'I':
+			dit();
+			dit();
 			break;
-		case 'u':
-			dit();
-			dit();
-			dah();
-			break;
-		case 'v':
-			dit();
-			dit();
+		case 'J':
 			dit();
 			dah();
-			break;
-		case 'w':
-			dit();
 			dah();
 			dah();
 			break;
-		case 'x':
+		case 'K':
+			dah();
+			dit();
+			dah();
+			break;
+		case 'L':
+			dit();
+			dah();
+			dit();
+			dit();
+			break;
+		case 'M':
+			dah();
+			dah();
+			break;
+		case 'N':
+			dah();
+			dit();
+			break;
+		case 'O':
+			dah();
+			dah();
+			dah();
+			break;
+		case 'P':
+			dit();
+			dah();
+			dah();
+			dit();
+			break;
+		case 'Q':
+			dah();
+			dah();
+			dit();
+			dah();
+			break;
+		case 'R':
+			dit();
+			dah();
+			dit();
+			break;
+		case 'S':
+			dit();
+			dit();
+			dit();
+			break;
+		case 'T':
+			dah();
+			break;
+		case 'U':
+			dit();
+			dit();
+			dah();
+			break;
+		case 'V':
+			dit();
+			dit();
+			dit();
+			dah();
+			break;
+		case 'W':
+			dit();
+			dah();
+			dah();
+			break;
+		case 'X':
 			dah();
 			dit();
 			dit();
 			dah();
 			break;
-		case 'y':
+		case 'Y':
 			dah();
 			dit();
 			dah();
 			dah();
 			break;
-		case 'z':
+		case 'Z':
 			dah();
 			dah();
 			dit();

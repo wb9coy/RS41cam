@@ -42,20 +42,22 @@ GPS_StatusTypeDef setGPS_DynamicModel6(UART_HandleTypeDef *huart)
 	ubxNavPacket.ubxNavMsgData.messageClass = 0x06;
 	ubxNavPacket.ubxNavMsgData.messageId    = 0x24;
 	ubxNavPacket.ubxNavMsgData.payloadSize  = sizeof(ubxNavPacket.ubxNavMsgData.ubxNavPayload);
-	//ubxNavPacket.ubxNavMsgData.ubxNavPayload.mask = 0b00000001111111111;
-	ubxNavPacket.ubxNavMsgData.ubxNavPayload.mask =   0b00000000000000011;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.mask = 0b00000001111111111;
 	ubxNavPacket.ubxNavMsgData.ubxNavPayload.dynModel        =6;
-	ubxNavPacket.ubxNavMsgData.ubxNavPayload.fixMode         =3;
-//	ubxNavPacket.ubxNavMsgData.ubxNavPayload.fixedAlt        =0;
-//	ubxNavPacket.ubxNavMsgData.ubxNavPayload.fixedAltVar     =10000;
-//	ubxNavPacket.ubxNavMsgData.ubxNavPayload.minElv          =5;
-//	ubxNavPacket.ubxNavMsgData.ubxNavPayload.drLimit         =0;
-//	ubxNavPacket.ubxNavMsgData.ubxNavPayload.pDop            =100;
-//	ubxNavPacket.ubxNavMsgData.ubxNavPayload.tDop            =100;
-//	ubxNavPacket.ubxNavMsgData.ubxNavPayload.pAcc            =100;
-//	ubxNavPacket.ubxNavMsgData.ubxNavPayload.tAcc            =100;
-//	ubxNavPacket.ubxNavMsgData.ubxNavPayload.staticHoldThres =0;
-//	ubxNavPacket.ubxNavMsgData.ubxNavPayload.dgpsTimeOut     =2;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.fixMode         =2;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.fixedAlt        =0;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.fixedAltVar     =10000;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.minElv          =5;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.drLimit         =0;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.pDop            =100;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.tDop            =100;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.pAcc            =100;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.tAcc            =200;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.staticHoldThres =0;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.dgpsTimeOut     =2;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.reserved1       = 0;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.reserved2       = 0;
+	ubxNavPacket.ubxNavMsgData.ubxNavPayload.reserved3       = 0;
 
 	ubxNavPacket.ubxChecksum = calcChecksum((uint8_t *)&ubxNavPacket.ubxNavMsgData,sizeof(ubxNavPacket.ubxNavMsgData));
 

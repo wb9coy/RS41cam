@@ -425,7 +425,7 @@ CAM_StatusTypeDef processCAM(UART_HandleTypeDef *huart,struct rscode_driver *rsD
     uint16_t len          = 0;
 
 	static CAM_StateTypeDef CAM_State = CAM_SETUP;
-	static uint16_t  imageFileID = 0;
+	static uint8_t   imageFileID = 0;
 	static uint16_t  imageSeqnum = 0;
 
 	uint8_t txBuf[MTU_SIZE];
@@ -498,6 +498,7 @@ CAM_StatusTypeDef processCAM(UART_HandleTypeDef *huart,struct rscode_driver *rsD
 			switch(camStatus)
 			{
 				case CAM_OK:
+				case CAM_END:
 				{
 					HABPacketImageData.packetType = IMAGE_DATA;
 					HABPacketImageData.imageFileID = imageFileID;
@@ -510,18 +511,20 @@ CAM_StatusTypeDef processCAM(UART_HandleTypeDef *huart,struct rscode_driver *rsD
 
 					//memset(&txBuf,'\0',sizeof(txBuf));
 					memcpy(txBuf,&HABPacketImageData,sizeof(HABPacketImageData));
-					HAL_Delay(1);
+//					HAL_Delay(5);
 					HAL_Status =  radioTxData(txBuf,sizeof(HABPacketImageData));
 					if(HAL_Status != HAL_OK)
 					{
 						CAM_State = CAM_SETUP;
 					}
+					else
+					{
+						if(camStatus == CAM_END)
+						{
+							CAM_State = CAM_END_XFER;
+						}
+					}
 					imageSeqnum = imageSeqnum + 1;
-					break;
-				}
-				case CAM_END:
-				{
-					CAM_State = CAM_END_XFER;
 					break;
 				}
 				case CAM_FAIL:
