@@ -10,6 +10,7 @@
 #include "ecc.h"
 #include "cam.h"
 #include "radio.h"
+#include "config.h"
 #include "packetDefs.h"
 
 int totReveived 	= 0;
@@ -471,13 +472,11 @@ CAM_StatusTypeDef processCAM(UART_HandleTypeDef *huart,struct rscode_driver *rsD
 
 						memset(&txBuf,'\0',sizeof(txBuf));
 						memcpy(txBuf,&HABPacketImageStart,sizeof(HABPacketImageStart));
-						HAL_Delay(300);
 						HAL_Status =  radioTxData(txBuf,sizeof(HABPacketImageStart));
 						if(HAL_Status != HAL_OK)
 						{
 							CAM_State = CAM_SETUP;
 						}
-						HAL_Delay(300);
 						CAM_State = CAM_DATA_XFER;
 					}
 					else
@@ -505,13 +504,13 @@ CAM_StatusTypeDef processCAM(UART_HandleTypeDef *huart,struct rscode_driver *rsD
 					HABPacketImageData.imageSeqnum = imageSeqnum;
 					HABPacketImageData.imageDataLen = imageXferLen;
 					memcpy(&HABPacketImageData.imageData,&camDataBuf,HABPacketImageData.imageDataLen);
+					//len = sizeof(HABPacketImageData)-sizeof(HABPacketImageData.crc16)-NPAR;
 					len = sizeof(HABPacketImageData)-sizeof(HABPacketImageData.crc16);
 					HABPacketImageData.crc16 = crc_16((unsigned char *)&HABPacketImageData,len);
-					//rscode_encode(&rsDriver, (unsigned char *)&HABPacketImageData, sizeof(HABPacketImageData)-NPAR, (unsigned char *)&HABPacketImageData);
+					//rscode_encode(rsDriver, (unsigned char *)&HABPacketImageData, sizeof(HABPacketImageData)-NPAR, (unsigned char *)&HABPacketImageData);
 
-					//memset(&txBuf,'\0',sizeof(txBuf));
+					memset(&txBuf,'\0',sizeof(txBuf));
 					memcpy(txBuf,&HABPacketImageData,sizeof(HABPacketImageData));
-//					HAL_Delay(5);
 					HAL_Status =  radioTxData(txBuf,sizeof(HABPacketImageData));
 					if(HAL_Status != HAL_OK)
 					{
@@ -545,7 +544,6 @@ CAM_StatusTypeDef processCAM(UART_HandleTypeDef *huart,struct rscode_driver *rsD
 			rscode_encode(rsDriver, (unsigned char *)&HABPacketImageEnd, sizeof(HABPacketImageEnd)-NPAR, (unsigned char *)&HABPacketImageEnd);
 			memset(&txBuf,'\0',sizeof(txBuf));
 			memcpy(txBuf,&HABPacketImageEnd,sizeof(HABPacketImageEnd));
-			HAL_Delay(300);
 			HAL_Status =  radioTxData(txBuf,sizeof(HABPacketImageEnd));
 			if(HAL_Status == HAL_OK)
 			{

@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include "radio.h"
+#include "config.h"
 #include "gps.h"
 #include "packetDefs.h"
 
@@ -80,7 +81,6 @@ GPS_StatusTypeDef processGPS(UART_HandleTypeDef *huart)
 		}
 		memcpy(HABPacketGPSData.gpsData,GPGGASentence,HABPacketGPSData.gpsDataLen);
 		memcpy(txBuf,&HABPacketGPSData,sizeof(HABPacketGPSData));
-		HAL_Delay(300);
 		HAL_Status =  radioTxData(txBuf,MTU_SIZE);
 
 		memset(HABPacketGPSData.gpsData, '\0', GPS_BUF_DATA_SIZE);
@@ -96,7 +96,6 @@ GPS_StatusTypeDef processGPS(UART_HandleTypeDef *huart)
 
 		HABPacketGPSData.packetType = GPS_GGA_2;
 		memcpy(txBuf,&HABPacketGPSData,sizeof(HABPacketGPSData));
-		HAL_Delay(300);
 		HAL_Status =  radioTxData(txBuf,MTU_SIZE);
 		///////////////////////////////////////////
 
@@ -111,7 +110,6 @@ GPS_StatusTypeDef processGPS(UART_HandleTypeDef *huart)
 		}
 		memcpy(HABPacketGPSData.gpsData,GPRMCSentence,HABPacketGPSData.gpsDataLen);
 		memcpy(txBuf,&HABPacketGPSData,sizeof(HABPacketGPSData));
-		HAL_Delay(300);
 		HAL_Status =  radioTxData(txBuf,MTU_SIZE);
 
 		memset(HABPacketGPSData.gpsData, '\0', GPS_BUF_DATA_SIZE);
@@ -127,7 +125,6 @@ GPS_StatusTypeDef processGPS(UART_HandleTypeDef *huart)
 
 		HABPacketGPSData.packetType = GPS_RMC_2;
 		memcpy(txBuf,&HABPacketGPSData,sizeof(HABPacketGPSData));
-		HAL_Delay(300);
 		HAL_Status =  radioTxData(txBuf,MTU_SIZE);
 
 		sendGGA 		= 0;

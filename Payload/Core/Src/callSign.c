@@ -30,7 +30,6 @@ int processCallSign(struct rscode_driver *rsDriver)
 	HABPacketCallSignData.crc16 = crc_16((unsigned char *)&HABPacketCallSignData,len);
 	rscode_encode(rsDriver, (unsigned char *)&HABPacketCallSignData, sizeof(HABPacketCallSignData)-NPAR, (unsigned char *)&HABPacketCallSignData);
 	memcpy(txBuf,&HABPacketCallSignData,sizeof(HABPacketCallSignData));
-	HAL_Delay(300);
 	HAL_Status =  radioTxData(txBuf,sizeof(HABPacketCallSignData));
 	if(HAL_Status != HAL_OK)
 	{

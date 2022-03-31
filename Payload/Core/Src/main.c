@@ -18,6 +18,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <humidity.h>
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -32,8 +33,11 @@
 #include "info.h"
 #include "batt.h"
 #include "internalTemp.h"
+#include "externalTemp.h"
+#include "pressure.h"
+#include "humidity.h"
 #include "Setup_Si4032.h"
-
+#include "bme280.h"
 
 /* USER CODE END Includes */
 
@@ -70,9 +74,9 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_USART1_UART_Init(void);
-static void MX_USART3_UART_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_ADC1_Init(void);
+static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -83,14 +87,19 @@ static void MX_ADC1_Init(void);
 int collectGPSData	= 0;
 
 
-int callSignTic     			= 0;
+int callSignTic					= 0;
 int sendCallSign				= 1;
-int sendInfoTic     			= 0;
+int sendInfoTic					= 0;
 int sendInfo					= 1;
-int sendBattInfoTic 			= 0;
+int sendBattInfoTic				= 0;
 int sendBattInfo    			= 1;
 int sendInternalTemperatureTic	= 0;
 int sendInternalTemperature     = 1;
+int sendExtTempHumPressTic	    = 0;
+int sendExtTempHumPress         = 1;
+int BME280Present				= 0;
+
+struct bme280SensorMeasurementsType bme280SensorMeasurements;
 
 /* USER CODE END 0 */
 
@@ -102,6 +111,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   HAL_StatusTypeDef HAL_Status;
+  BME_StatusTypeDef BME_Status;
 
   GPS_StatusTypeDef gpsStatus  = GPS_OK;
 
@@ -127,9 +137,9 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI2_Init();
   MX_USART1_UART_Init();
-  MX_USART3_UART_Init();
   MX_TIM2_Init();
   MX_ADC1_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
   struct rscode_driver rsDriver;
@@ -153,13 +163,22 @@ int main(void)
 	  gpsStatus  = GPS_FAIL;
   }
 
+  HAL_GPIO_WritePin(PRESSURE_NSS_GPIO_Port, PRESSURE_NSS_Pin, GPIO_PIN_SET);
   HAL_Status = setupRadio(&hspi2);
   if(HAL_Status != HAL_OK)
   {
 	  exit(1);
   }
 
+  //HAL_GPIO_WritePin(RADIO_NSS_GPIO_Port, RADIO_NSS_Pin, GPIO_PIN_RESET);
+  BME_Status = bme280_init(&hspi2);
+  if(BME_Status == BME_OK)
+  {
+    BME280Present = 1;
+  }
+
   rscode_init(&rsDriver);
+
 
   /* USER CODE END 2 */
 
@@ -201,6 +220,18 @@ int main(void)
 	{
 		processGPS(&huart1);
 		collectGPSData 	= 0;
+	}
+
+	if(sendExtTempHumPress)
+	{
+		if(BME280Present == 1)
+		{
+			BME_Status = readAllMeasurements(&bme280SensorMeasurements, FAHRENHEIT_SCALE);
+			BME_Status = processExternalTemp(&rsDriver,bme280SensorMeasurements.temperature);
+			BME_Status = processPressure(&rsDriver,bme280SensorMeasurements.pressure);
+			BME_Status = processHumidity(&rsDriver,bme280SensorMeasurements.humidity);
+		}
+		sendExtTempHumPress = 0;
 	}
 
 	processCAM(&huart3,&rsDriver);
@@ -469,7 +500,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(RADIO_NSS_GPIO_Port, RADIO_NSS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GREEN_LED_Pin|RED_LED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, PRESSURE_NSS_Pin|GREEN_LED_Pin|RED_LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : RADIO_NSS_Pin */
   GPIO_InitStruct.Pin = RADIO_NSS_Pin;
@@ -478,8 +509,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(RADIO_NSS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : GREEN_LED_Pin RED_LED_Pin */
-  GPIO_InitStruct.Pin = GREEN_LED_Pin|RED_LED_Pin;
+  /*Configure GPIO pins : PRESSURE_NSS_Pin GREEN_LED_Pin RED_LED_Pin */
+  GPIO_InitStruct.Pin = PRESSURE_NSS_Pin|GREEN_LED_Pin|RED_LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -519,6 +550,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	  sendInfoTic++;
 	  sendBattInfoTic++;
 	  sendInternalTemperatureTic++;
+	  sendExtTempHumPressTic++;
 
 	  if(callSignTic % 40 == 0)
 	  {
@@ -537,6 +569,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	  if(sendInternalTemperatureTic % 15 == 0)
 	  {
 		  sendInternalTemperature = 1;
+	  }
+
+	  if(sendExtTempHumPressTic % 2 == 0)
+	  {
+		  sendExtTempHumPress = 1;
 	  }
   }
 

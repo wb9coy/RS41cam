@@ -29,7 +29,6 @@ int processInfo(struct rscode_driver *rsDriver)
 	HABPacketInfoData.crc16 = crc_16((unsigned char *)&HABPacketInfoData,len);
 	rscode_encode(rsDriver, (unsigned char *)&HABPacketInfoData, sizeof(HABPacketInfoData)-NPAR, (unsigned char *)&HABPacketInfoData);
 	memcpy(txBuf,&HABPacketInfoData,sizeof(HABPacketInfoData));
-	HAL_Delay(300);
 	HAL_Status =  radioTxData(txBuf,sizeof(HABPacketInfoData));
 	if(HAL_Status != HAL_OK)
 	{

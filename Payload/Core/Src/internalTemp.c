@@ -43,7 +43,6 @@ int processInternalTemp(struct rscode_driver *rsDriver)
 	  HABPacketIntTempInfoData.crc16 = crc_16((unsigned char *)&HABPacketIntTempInfoData,len);
 	  rscode_encode(rsDriver, (unsigned char *)&HABPacketIntTempInfoData, sizeof(HABPacketIntTempInfoData)-NPAR, (unsigned char *)&HABPacketIntTempInfoData);
 	  memcpy(txBuf,&HABPacketIntTempInfoData,sizeof(HABPacketIntTempInfoData));
-	  HAL_Delay(300);
 	  HAL_Status =  radioTxData(txBuf,sizeof(HABPacketIntTempInfoData));
 
 	}

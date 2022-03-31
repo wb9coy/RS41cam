@@ -6,6 +6,7 @@
  */
 #include <string.h>
 #include <math.h>
+#include "config.h"
 #include "packetDefs.h"
 #include "checksum.h"
 #include "radio.h"
@@ -44,8 +45,7 @@ int processBattery(struct rscode_driver *rsDriver,ADC_HandleTypeDef* hadc)
 	HABPacketBattInfoData.crc16 = crc_16((unsigned char *)&HABPacketBattInfoData,len);
 	rscode_encode(rsDriver, (unsigned char *)&HABPacketBattInfoData, sizeof(HABPacketBattInfoData)-NPAR, (unsigned char *)&HABPacketBattInfoData);
 	memcpy(txBuf,&HABPacketBattInfoData,sizeof(HABPacketBattInfoData));
-	HAL_Delay(300);
-	HAL_Status =  radioTxData(txBuf,sizeof(HABPacketBattInfoData));
+	HAL_Status =  radioTxData(txBuf,sizeof(HABPacketBattInfoData));;
 	if(HAL_Status != HAL_OK)
 	{
 	status = 0;

@@ -9,6 +9,7 @@
 #include "radio.h"
 #include "led.h"
 #include "config.h"
+#include "packetDefs.h"
 #include "main.h"
 
 static SPI_HandleTypeDef *hspi;
@@ -154,6 +155,37 @@ HAL_StatusTypeDef radio_write_register(const uint8_t register_addr, uint8_t valu
   return HAL_Status;
 }
 
+HAL_StatusTypeDef radio_write_register_burst(const uint8_t register_addr, uint8_t txData[],uint8_t len)
+{
+  HAL_StatusTypeDef HAL_Status;
+
+  uint8_t WR = 0x80;
+  uint16_t data_word;
+  uint8_t addr;
+  uint8_t val;
+  int i;
+
+  HAL_GPIO_WritePin(RADIO_NSS_GPIO_Port, RADIO_NSS_Pin, GPIO_PIN_RESET);
+
+  data_word = ((register_addr | WR) << 8) | txData[0];
+  addr = data_word >> 8;
+  val  = (uint8_t)data_word;
+
+
+  HAL_Status = HAL_SPI_Transmit(hspi, (uint8_t *)&addr, 1, 1000);
+  HAL_Delay(1);
+  HAL_Status = HAL_SPI_Transmit(hspi, (uint8_t *)&val, 1, 1000);
+
+  for(i=1;i<len;i++)
+  {
+	  HAL_Status = HAL_SPI_Transmit(hspi, (uint8_t *)&txData[i], 1, 1000);
+  }
+
+  HAL_GPIO_WritePin(RADIO_NSS_GPIO_Port, RADIO_NSS_Pin, GPIO_PIN_SET);
+
+  return HAL_Status;
+}
+
 HAL_StatusTypeDef radio_set_tx_frequency(float freq_in_mhz)
 {
   HAL_StatusTypeDef HAL_Status;
@@ -180,19 +212,16 @@ HAL_StatusTypeDef radioTxData(uint8_t txData[],uint8_t len)
 {
 	HAL_StatusTypeDef HAL_Status;
 	uint8_t  regData;
-	int i;
 
 	HAL_Status = radio_write_register(0x3E, len);
-	for(i=0; i<len;i++)
-	{
-		HAL_Status = radio_write_register(0x7F, txData[i]);
-	}
+	HAL_Status = radio_write_register_burst(0x7F, &txData[0],len);
 
 	//read the Interrupt Status1 register
 	HAL_Status =  radio_read_register(0x3,&regData);
 	//read the Interrupt Status2 register
 	HAL_Status =  radio_read_register(0x4,&regData);
 
+	HAL_GPIO_WritePin(GPIOB, RED_LED_Pin, GPIO_PIN_RESET);
 	HAL_Status = radio_write_register(0x07, Si4032_OPERATING_AND_FUNCTION_CONTROL_1);
 	//HAL_Status = radio_write_register(0x07, 0x09);
 	regData = 0;
@@ -202,10 +231,19 @@ HAL_StatusTypeDef radioTxData(uint8_t txData[],uint8_t len)
 		HAL_Status =  radio_read_register(0x3,&regData);
 	}
 
+	if(len != 1)
+	{
+		HAL_Delay(PROTOCOL_DELAY);
+		if(len < MTU_SIZE)
+		{
+			HAL_Delay(PROTOCOL_DELAY*3);
+		}
+	}
+
+	HAL_GPIO_WritePin(GPIOB, RED_LED_Pin, GPIO_PIN_SET);
+
 	//read the Interrupt Status2 register
 	HAL_Status =  radio_read_register(0x4,&regData);
-
-	HAL_GPIO_TogglePin(GPIOB, RED_LED_Pin);
 
 	return HAL_Status;
 
