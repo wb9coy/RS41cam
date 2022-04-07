@@ -7,7 +7,6 @@
 
 #ifndef INC_INTERNALTEMP_H_
 #define INC_INTERNALTEMP_H_
-
 #include "ecc.h"
 
 int processInternalTemp(struct rscode_driver *rsDriver);

@@ -31,7 +31,9 @@
 #define ADC_BAT_CAL  0.48f
 
 #define ADC_TEMP_CAL_REG12  0xe0
-#define ADC_TEMP_CAL_REG13  0x00
+#define ADC_TEMP_CAL_REG13  0x09
+
+#define PROTOCOL_DELAY 30
 
 
 

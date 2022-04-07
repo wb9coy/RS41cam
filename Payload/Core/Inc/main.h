@@ -62,6 +62,8 @@ void Error_Handler(void);
 #define RADIO_NSS_GPIO_Port GPIOC
 #define Batt_Volt_Pin GPIO_PIN_5
 #define Batt_Volt_GPIO_Port GPIOA
+#define PRESSURE_NSS_Pin GPIO_PIN_2
+#define PRESSURE_NSS_GPIO_Port GPIOB
 #define GREEN_LED_Pin GPIO_PIN_7
 #define GREEN_LED_GPIO_Port GPIOB
 #define RED_LED_Pin GPIO_PIN_8
