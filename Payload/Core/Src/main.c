@@ -97,6 +97,9 @@ int sendInternalTemperatureTic	= 0;
 int sendInternalTemperature     = 1;
 int sendExtTempHumPressTic	    = 0;
 int sendExtTempHumPress         = 1;
+int resetTic	    			= 0;
+int resetSI4032			        = 1;
+
 int BME280Present				= 0;
 
 struct bme280SensorMeasurementsType bme280SensorMeasurements;
@@ -163,22 +166,7 @@ int main(void)
 	  gpsStatus  = GPS_FAIL;
   }
 
-  HAL_GPIO_WritePin(PRESSURE_NSS_GPIO_Port, PRESSURE_NSS_Pin, GPIO_PIN_SET);
-  HAL_Status = setupRadio(&hspi2);
-  if(HAL_Status != HAL_OK)
-  {
-	  exit(1);
-  }
-
-  //HAL_GPIO_WritePin(RADIO_NSS_GPIO_Port, RADIO_NSS_Pin, GPIO_PIN_RESET);
-  BME_Status = bme280_init(&hspi2);
-  if(BME_Status == BME_OK)
-  {
-    BME280Present = 1;
-  }
-
   rscode_init(&rsDriver);
-
 
   /* USER CODE END 2 */
 
@@ -191,6 +179,26 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	    /* USER CODE END WHILE */
+
+	if(resetSI4032)
+	{
+		HAL_GPIO_WritePin(PRESSURE_NSS_GPIO_Port, PRESSURE_NSS_Pin, GPIO_PIN_SET);
+		HAL_Status = HAL_ERROR;
+		while(HAL_Status != HAL_OK)
+		{
+			HAL_Status = setupRadio(&hspi2);
+		}
+
+		BME280Present = 0;
+		BME_Status = bme280_init(&hspi2);
+		if(BME_Status == BME_OK)
+		{
+			BME280Present = 1;
+		}
+
+		resetSI4032 = 0;
+
+	}
 
 	if(sendCallSign)
 	{
@@ -551,13 +559,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	  sendBattInfoTic++;
 	  sendInternalTemperatureTic++;
 	  sendExtTempHumPressTic++;
+	  resetTic++;
 
 	  if(callSignTic % 40 == 0)
-	  {
-		  sendCallSign = 1;
-	  }
-
-	  if(callSignTic % 60 == 0)
 	  {
 		  sendCallSign = 1;
 	  }
@@ -574,6 +578,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	  if(sendExtTempHumPressTic % 2 == 0)
 	  {
 		  sendExtTempHumPress = 1;
+	  }
+
+	  if(resetTic % 5 == 0)
+	  {
+		  resetSI4032 = 1;
 	  }
   }
 

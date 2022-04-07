@@ -212,6 +212,7 @@ HAL_StatusTypeDef radioTxData(uint8_t txData[],uint8_t len)
 {
 	HAL_StatusTypeDef HAL_Status;
 	uint8_t  regData;
+	int retryCount = 0;
 
 	HAL_Status = radio_write_register(0x3E, len);
 	HAL_Status = radio_write_register_burst(0x7F, &txData[0],len);
@@ -225,10 +226,11 @@ HAL_StatusTypeDef radioTxData(uint8_t txData[],uint8_t len)
 	HAL_Status = radio_write_register(0x07, Si4032_OPERATING_AND_FUNCTION_CONTROL_1);
 	//HAL_Status = radio_write_register(0x07, 0x09);
 	regData = 0;
-	while((regData & 0x04) != 0x4)
+	while((regData & 0x04) != 0x4 && (retryCount < 50))
 	{
 		//read the Interrupt Status1 register
 		HAL_Status =  radio_read_register(0x3,&regData);
+		retryCount++;
 	}
 
 	if(len != 1)
