@@ -32,6 +32,7 @@ int processPressure(struct rscode_driver *rsDriver, float pressureParm)
 	rscode_encode(rsDriver, (unsigned char *)&HABPacketPressureInfoData, sizeof(HABPacketPressureInfoData)-NPAR, (unsigned char *)&HABPacketPressureInfoData);
 	memcpy(txBuf,&HABPacketPressureInfoData,sizeof(HABPacketPressureInfoData));
 	HAL_Status =  radioTxData(txBuf,sizeof(HABPacketPressureInfoData));
+	HAL_Delay(PROTOCOL_DELAY);
 	if(HAL_Status != HAL_OK)
 	{
 

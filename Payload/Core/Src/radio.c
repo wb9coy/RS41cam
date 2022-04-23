@@ -235,11 +235,11 @@ HAL_StatusTypeDef radioTxData(uint8_t txData[],uint8_t len)
 
 	if(len != 1)
 	{
-		HAL_Delay(PROTOCOL_DELAY);
-		if(len < MTU_SIZE)
-		{
-			HAL_Delay(PROTOCOL_DELAY*3);
-		}
+//		HAL_Delay(PROTOCOL_DELAY);
+//		if(len < MTU_SIZE)
+//		{
+//			HAL_Delay(PROTOCOL_DELAY*3);
+//		}
 	}
 
 	HAL_GPIO_WritePin(GPIOB, RED_LED_Pin, GPIO_PIN_SET);

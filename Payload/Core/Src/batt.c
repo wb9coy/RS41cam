@@ -46,6 +46,7 @@ int processBattery(struct rscode_driver *rsDriver,ADC_HandleTypeDef* hadc)
 	rscode_encode(rsDriver, (unsigned char *)&HABPacketBattInfoData, sizeof(HABPacketBattInfoData)-NPAR, (unsigned char *)&HABPacketBattInfoData);
 	memcpy(txBuf,&HABPacketBattInfoData,sizeof(HABPacketBattInfoData));
 	HAL_Status =  radioTxData(txBuf,sizeof(HABPacketBattInfoData));
+	HAL_Delay(PROTOCOL_DELAY);
 	if(HAL_Status != HAL_OK)
 	{
 	status = 0;

@@ -4,6 +4,7 @@
 #include "packetDefs.h"
 #include "externalTemp.h"
 #include "stm32f1xx_hal.h"
+#include "config.h"
 
 int processExternalTemp(struct rscode_driver *rsDriver, float externalTemp)
 {
@@ -24,6 +25,7 @@ int processExternalTemp(struct rscode_driver *rsDriver, float externalTemp)
 	rscode_encode(rsDriver, (unsigned char *)&HABPacketExtTempInfoData, sizeof(HABPacketExtTempInfoData)-NPAR, (unsigned char *)&HABPacketExtTempInfoData);
 	memcpy(txBuf,&HABPacketExtTempInfoData,sizeof(HABPacketExtTempInfoData));;
 	HAL_Status =  radioTxData(txBuf,sizeof(HABPacketExtTempInfoData));
+	HAL_Delay(PROTOCOL_DELAY);
 	if(HAL_Status != HAL_OK)
 	{
 

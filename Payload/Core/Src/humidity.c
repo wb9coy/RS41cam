@@ -32,6 +32,7 @@ int processHumidity(struct rscode_driver *rsDriver, float humidityParm)
 	rscode_encode(rsDriver, (unsigned char *)&HABPacketHumidityInfoData, sizeof(HABPacketHumidityInfoData)-NPAR, (unsigned char *)&HABPacketHumidityInfoData);
 	memcpy(txBuf,&HABPacketHumidityInfoData,sizeof(HABPacketHumidityInfoData));
 	HAL_Status =  radioTxData(txBuf,sizeof(HABPacketHumidityInfoData));
+	HAL_Delay(PROTOCOL_DELAY);
 	if(HAL_Status != HAL_OK)
 	{
 

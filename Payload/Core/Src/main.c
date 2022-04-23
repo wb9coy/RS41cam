@@ -38,6 +38,7 @@
 #include "humidity.h"
 #include "Setup_Si4032.h"
 #include "bme280.h"
+#include "config.h"
 
 /* USER CODE END Includes */
 
@@ -242,7 +243,12 @@ int main(void)
 		sendExtTempHumPress = 0;
 	}
 
+#ifdef TEST_MODE
+	processTestCam(&rsDriver);
+#else
 	processCAM(&huart3,&rsDriver);
+#endif
+
 
   }
   /* USER CODE END 3 */
