@@ -43,6 +43,10 @@ CAM_StatusTypeDef takePhoto(UART_HandleTypeDef *uart);
 CAM_StatusTypeDef readData(UART_HandleTypeDef *huart, uint8_t camDataBuf[], uint16_t *len );
 CAM_StatusTypeDef setPhotoSize(UART_HandleTypeDef *huart);
 CAM_StatusTypeDef processCAM(UART_HandleTypeDef *huart, struct rscode_driver *rsDriver);
+CAM_StatusTypeDef processTestCam();
+#ifdef TEST_MODE
+CAM_StatusTypeDef processTestCam(struct rscode_driver *rsDriver);
+#endif
 
 
 #endif /* INC_CAM_H_ */

@@ -12,7 +12,7 @@
 
 /**************** Frequency Control ********************
 
-        Operating Frequency: 434.200 MHz
+        Operating Frequency: 434.500 MHz
  *******************************************************/
 
 #define Si4032_CRYSTAL_OSCILLATOR_LOAD_CAPACITANCE 0x7F
@@ -36,12 +36,12 @@
         Address:                0x75
 */
 
-#define Si4032_NOMINAL_CARRIER_FREQUENCY_1         0x69
+#define Si4032_NOMINAL_CARRIER_FREQUENCY_1         0x70
 /*
         Address:                0x76
 */
 
-#define Si4032_NOMINAL_CARRIER_FREQUENCY_0         0x00
+#define Si4032_NOMINAL_CARRIER_FREQUENCY_0         0x80
 /*
         Address:                0x77
 */
@@ -95,10 +95,10 @@ Modulation Type:    GFSK
 
 */
 
-#define Si4032_FREQUENCY_DEVIATION                 0x10
+#define Si4032_FREQUENCY_DEVIATION                 0x0D
 /*
         Address:                0x72
-        Deviation: 10 kHz
+        Deviation: 8.125 kHz
 */
 
 /**************** Operation mode ***********************/

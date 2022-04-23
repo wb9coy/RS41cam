@@ -8,6 +8,8 @@
 #ifndef INC_CONFIG_H_
 #define INC_CONFIG_H_
 
+//#define TEST_MODE
+
 #define VERSION_INFO ((char *)"Payload Version 1.0")
 
 #define CALL_SIGN ((char *)"W6SUN")
@@ -33,7 +35,7 @@
 #define ADC_TEMP_CAL_REG12  0xe0
 #define ADC_TEMP_CAL_REG13  0x09
 
-#define PROTOCOL_DELAY 30
+#define PROTOCOL_DELAY 100
 
 
 
