@@ -12,7 +12,7 @@
 
 #define VERSION_INFO ((char *)"Payload Version 1.0")
 
-#define CALL_SIGN ((char *)"W6SUN")
+#define CALL_SIGN ((char *)"NOCALL")
 
 #define TRANSMIT_FREQUENCY  434.500f //Mhz
 
