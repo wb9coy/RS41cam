@@ -1644,6 +1644,7 @@ CAM_StatusTypeDef processTestCam(struct rscode_driver *rsDriver)
 					memset(&txBuf,'\0',sizeof(txBuf));
 					memcpy(txBuf,&HABPacketImageData,sizeof(HABPacketImageData));
 					HAL_Status =  radioTxData(txBuf,sizeof(HABPacketImageData));
+					HAL_Delay(15);
 					if(HAL_Status != HAL_OK)
 					{
 						CAM_State = CAM_SETUP;
