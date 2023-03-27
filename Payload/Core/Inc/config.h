@@ -10,9 +10,9 @@
 
 //#define TEST_MODE
 
-#define VERSION_INFO ((char *)"Payload Version 1.0")
+#define VERSION_INFO ((char *)"Payload Version 1.1")
 
-#define CALL_SIGN ((char *)"NOCALL")
+#define CALL_SIGN ((char *)"W6SUN")
 
 #define TRANSMIT_FREQUENCY  434.500f //Mhz
 

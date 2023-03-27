@@ -64,6 +64,8 @@ void Error_Handler(void);
 #define Batt_Volt_GPIO_Port GPIOA
 #define PRESSURE_NSS_Pin GPIO_PIN_2
 #define PRESSURE_NSS_GPIO_Port GPIOB
+#define RCC_MCO_PRESS_Pin GPIO_PIN_8
+#define RCC_MCO_PRESS_GPIO_Port GPIOA
 #define GREEN_LED_Pin GPIO_PIN_7
 #define GREEN_LED_GPIO_Port GPIOB
 #define RED_LED_Pin GPIO_PIN_8
@@ -77,5 +79,3 @@ void Error_Handler(void);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
