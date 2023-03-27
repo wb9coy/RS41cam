@@ -1075,6 +1075,8 @@ CAM_StatusTypeDef resetCam(UART_HandleTypeDef *huart)
 	  }
 	}
 
+	HAL_Delay(2000);
+
   return camStatus;
 }
 
@@ -1237,6 +1239,9 @@ CAM_StatusTypeDef getLenOfPhoto(UART_HandleTypeDef *huart, uint16_t *len)
 	HAL_StatusTypeDef HAL_Status;
 
 	uint16_t rtnLen;
+	uint16_t picLen   = 0;
+	uint16_t rem      = 0;
+	uint16_t wholeNum = 0;
 
 	uint8_t getLenOfPhotoCmd[] = { 0x56, 0x00, 0x34, 0x01, 0x00};
 	uint8_t expectedRsp[] = {0x76, 0x00, 0x34, 0x00, 0x04, 0x00, 0x00};
@@ -1268,12 +1273,19 @@ CAM_StatusTypeDef getLenOfPhoto(UART_HandleTypeDef *huart, uint16_t *len)
 		  if(camStatus == CAM_OK)
 		  {
 			  rtnLen = (uint16_t)(rspBuf[sizeof(rspBuf)-2] << 8 | rspBuf[sizeof(rspBuf)-1]);
-			  *len = rtnLen;
-			  lenFromCam = rtnLen;
+
 			  if( (rtnLen % IMG_BUF_DATA_SIZE) != 0 )
 			  {
-				  camStatus = CAM_FAIL;
-					HAL_Delay(100);
+					wholeNum = rtnLen/IMG_BUF_DATA_SIZE;
+					wholeNum++;
+					rem = ( wholeNum * IMG_BUF_DATA_SIZE) - rtnLen;
+					picLen = rtnLen + rem;
+					*len = picLen;
+
+			  }
+			  else
+			  {
+				  *len = rtnLen;
 			  }
 		  }
 	  }
@@ -1395,18 +1407,6 @@ CAM_StatusTypeDef readData(UART_HandleTypeDef *huart, uint8_t camDataBuf[], uint
 					status = CAM_END;
 					break;
 				}
-			}
-			if(status == CAM_END)
-			{
-				if(lenFromCam != totReveived)
-				{
-					status = CAM_FAIL;
-				}
-//				HAL_Status = HAL_UARTEx_ReceiveToIdle(huart, footer, sizeof(footer), &received, 3000);
-//				if(HAL_Status != HAL_OK)
-//				{
-//					status = CAM_FAIL;
-//				}
 			}
 		}
 	}

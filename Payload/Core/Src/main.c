@@ -18,7 +18,6 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <humidity.h>
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -35,9 +34,8 @@
 #include "internalTemp.h"
 #include "externalTemp.h"
 #include "pressure.h"
-#include "humidity.h"
 #include "Setup_Si4032.h"
-#include "bme280.h"
+#include "RPM411.h"
 #include "config.h"
 
 /* USER CODE END Includes */
@@ -96,14 +94,10 @@ int sendBattInfoTic				= 0;
 int sendBattInfo    			= 1;
 int sendInternalTemperatureTic	= 0;
 int sendInternalTemperature     = 1;
-int sendExtTempHumPressTic	    = 0;
-int sendExtTempHumPress         = 1;
+int sendPressureTic	    		= 0;
+int sendPressure         		= 1;
 int resetTic	    			= 0;
 int resetSI4032			        = 1;
-
-int BME280Present				= 0;
-
-struct bme280SensorMeasurementsType bme280SensorMeasurements;
 
 /* USER CODE END 0 */
 
@@ -115,9 +109,8 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   HAL_StatusTypeDef HAL_Status;
-  BME_StatusTypeDef BME_Status;
 
-  GPS_StatusTypeDef gpsStatus  = GPS_OK;
+  GPS_StatusTypeDef gpsStatus	   = GPS_OK;
 
   /* USER CODE END 1 */
 
@@ -169,6 +162,8 @@ int main(void)
 
   rscode_init(&rsDriver);
 
+  RPM411Init(&hspi2);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -183,18 +178,10 @@ int main(void)
 
 	if(resetSI4032)
 	{
-		HAL_GPIO_WritePin(PRESSURE_NSS_GPIO_Port, PRESSURE_NSS_Pin, GPIO_PIN_SET);
 		HAL_Status = HAL_ERROR;
 		while(HAL_Status != HAL_OK)
 		{
 			HAL_Status = setupRadio(&hspi2);
-		}
-
-		BME280Present = 0;
-		BME_Status = bme280_init(&hspi2);
-		if(BME_Status == BME_OK)
-		{
-			BME280Present = 1;
 		}
 
 		resetSI4032 = 0;
@@ -231,16 +218,10 @@ int main(void)
 		collectGPSData 	= 0;
 	}
 
-	if(sendExtTempHumPress)
+	if(sendPressure)
 	{
-		if(BME280Present == 1)
-		{
-			BME_Status = readAllMeasurements(&bme280SensorMeasurements, FAHRENHEIT_SCALE);
-			BME_Status = processExternalTemp(&rsDriver,bme280SensorMeasurements.temperature);
-			BME_Status = processPressure(&rsDriver,bme280SensorMeasurements.pressure);
-			BME_Status = processHumidity(&rsDriver,bme280SensorMeasurements.humidity);
-		}
-		sendExtTempHumPress = 0;
+		processPressure(&rsDriver,&hspi2);
+		sendPressure = 0;
 	}
 
 #ifdef TEST_MODE
@@ -267,7 +248,8 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
@@ -275,6 +257,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -294,6 +277,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+  HAL_RCC_MCOConfig(RCC_MCO, RCC_MCO1SOURCE_HSE, RCC_MCODIV_1);
 }
 
 /**
@@ -313,6 +297,7 @@ static void MX_ADC1_Init(void)
   /* USER CODE BEGIN ADC1_Init 1 */
 
   /* USER CODE END ADC1_Init 1 */
+
   /** Common config
   */
   hadc1.Instance = ADC1;
@@ -326,6 +311,7 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure Regular Channel
   */
   sConfig.Channel = ADC_CHANNEL_5;
@@ -507,6 +493,7 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
@@ -529,6 +516,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : RCC_MCO_PRESS_Pin */
+  GPIO_InitStruct.Pin = RCC_MCO_PRESS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(RCC_MCO_PRESS_GPIO_Port, &GPIO_InitStruct);
 
 }
 
@@ -564,7 +557,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	  sendInfoTic++;
 	  sendBattInfoTic++;
 	  sendInternalTemperatureTic++;
-	  sendExtTempHumPressTic++;
+	  sendPressureTic++;
 	  resetTic++;
 
 	  if(callSignTic % 40 == 0)
@@ -581,9 +574,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		  sendInternalTemperature = 1;
 	  }
 
-	  if(sendExtTempHumPressTic % 2 == 0)
+	  if(sendPressureTic % 1 == 0)
 	  {
-		  sendExtTempHumPress = 1;
+		  sendPressure = 1;
 	  }
 
 	  if(resetTic % 5 == 0)
@@ -626,5 +619,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
