@@ -22,7 +22,7 @@ typedef enum
   RPM411_FAIL	= 0x01U
 } RPM411StatusTypeDef;
 
-RPM411StatusTypeDef RPM411ReadPressure(SPI_HandleTypeDef *hspiParam, float *RPM411PressureData);
+RPM411StatusTypeDef RPM411ReadPressure(float *RPM411PressureData);
 RPM411StatusTypeDef RPM411Init(SPI_HandleTypeDef *hspiParam);
 
 

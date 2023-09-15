@@ -60,16 +60,41 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define RADIO_NSS_Pin GPIO_PIN_13
 #define RADIO_NSS_GPIO_Port GPIOC
+#define T_MEAS_SEL_HUMITEMP_Pin GPIO_PIN_14
+#define T_MEAS_SEL_HUMITEMP_GPIO_Port GPIOC
+#define T_MEAS_SEL_MAINTEMP_Pin GPIO_PIN_15
+#define T_MEAS_SEL_MAINTEMP_GPIO_Port GPIOC
+#define INPUT_MEASURED_VALUE_COUNT_Pin GPIO_PIN_1
+#define INPUT_MEASURED_VALUE_COUNT_GPIO_Port GPIOA
+#define HUMI_MODE_SELECT_START_Pin GPIO_PIN_2
+#define HUMI_MODE_SELECT_START_GPIO_Port GPIOA
+#define T_MEAS_SEL0_Pin GPIO_PIN_3
+#define T_MEAS_SEL0_GPIO_Port GPIOA
 #define Batt_Volt_Pin GPIO_PIN_5
 #define Batt_Volt_GPIO_Port GPIOA
+#define EXT_PIN4_Pin GPIO_PIN_1
+#define EXT_PIN4_GPIO_Port GPIOB
 #define PRESSURE_NSS_Pin GPIO_PIN_2
 #define PRESSURE_NSS_GPIO_Port GPIOB
+#define TEMP_MODE_SELECT_START_Pin GPIO_PIN_12
+#define TEMP_MODE_SELECT_START_GPIO_Port GPIOB
 #define RCC_MCO_PRESS_Pin GPIO_PIN_8
 #define RCC_MCO_PRESS_GPIO_Port GPIOA
+#define HUMI_SEL0_Pin GPIO_PIN_3
+#define HUMI_SEL0_GPIO_Port GPIOB
+#define HUMI_SEL1_Pin GPIO_PIN_4
+#define HUMI_SEL1_GPIO_Port GPIOB
+#define HUMI_SEL2_Pin GPIO_PIN_5
+#define HUMI_SEL2_GPIO_Port GPIOB
+#define T_MEAS_SEL1_Pin GPIO_PIN_6
+#define T_MEAS_SEL1_GPIO_Port GPIOB
 #define GREEN_LED_Pin GPIO_PIN_7
 #define GREEN_LED_GPIO_Port GPIOB
 #define RED_LED_Pin GPIO_PIN_8
 #define RED_LED_GPIO_Port GPIOB
+#define HUMIDITY_HEATING_ON_Pin GPIO_PIN_9
+#define HUMIDITY_HEATING_ON_GPIO_Port GPIOB
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

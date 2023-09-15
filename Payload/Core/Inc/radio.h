@@ -26,6 +26,9 @@ HAL_StatusTypeDef setCW();
 HAL_StatusTypeDef setGFSK();
 HAL_StatusTypeDef setPreamble();
 HAL_StatusTypeDef clearFIFO();
+HAL_StatusTypeDef clearRadio();
+HAL_StatusTypeDef setRadio();
+
 
 
 #endif /* INC_RADIO_H_ */

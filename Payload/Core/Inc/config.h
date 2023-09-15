@@ -8,11 +8,11 @@
 #ifndef INC_CONFIG_H_
 #define INC_CONFIG_H_
 
-//#define TEST_MODE
+#define TEST_MODE
 
-#define VERSION_INFO ((char *)"Payload Version 1.1")
+#define VERSION_INFO ((char *)"Payload Version 1.2")
 
-#define CALL_SIGN ((char *)"NOCALL")
+#define CALL_SIGN ((char *)"W6SUN")
 
 #define TRANSMIT_FREQUENCY  434.500f //Mhz
 
@@ -37,6 +37,12 @@
 
 #define PROTOCOL_DELAY 100
 
+//T1340722
+#define REFFREQ  67300.0f
+#define DIVISION 220.0f
+
+#define HUMREFFREQ  43475.0f
+#define HUMDIVISION 6.76f
 
 
 #endif /* INC_CONFIG_H_ */

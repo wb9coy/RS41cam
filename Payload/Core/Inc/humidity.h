@@ -9,6 +9,6 @@
 #define INC_HUMIDITY_H_
 #include "ecc.h"
 
-int processHumidity(struct rscode_driver *rsDriver, float humidityParm);
+int processHumidity(struct rscode_driver *rsDriver,float frequency);
 
 #endif /* INC_HUMIDITY_H_ */
