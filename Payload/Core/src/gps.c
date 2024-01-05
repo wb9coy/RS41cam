@@ -67,11 +67,12 @@ GPS_StatusTypeDef processGPS(UART_HandleTypeDef *huart)
 
 	if(sendGGA == 1 && sendRMC ==1)
 	{
+		strncpy((const char *)GPGGASentence,"$GPGGA,184052.00,3254.58594,N,11655.81393,W,2,10,0.95,10167.3,M,-33.4,M,,0000*62\r\n",82);
 		rmcLen = strlen((const char *)GPRMCSentence);
 		ggaLen = strlen((const char *)GPGGASentence);
 
 		memset(&HABPacketGPSData, '\0', sizeof(HABPacketGPSData));
-		if(ggaLen > GPS_BUF_DATA_SIZE+1)
+		if(ggaLen > GPS_BUF_DATA_SIZE)
 		{
 			HABPacketGPSData.packetType = GPS_GGA_1;
 			HABPacketGPSData.gpsDataLen = GPS_BUF_DATA_SIZE;
@@ -86,7 +87,7 @@ GPS_StatusTypeDef processGPS(UART_HandleTypeDef *huart)
 		HAL_Status =  radioTxData(txBuf,HABPacketGPSData.gpsDataLen+GPS_HDRF_DATA_SIZE);
 		HAL_Delay(PROTOCOL_DELAY);
 
-		if(ggaLen >  GPS_BUF_DATA_SIZE+1)
+		if(ggaLen >  GPS_BUF_DATA_SIZE)
 		{
 			memset(&HABPacketGPSData, '\0', sizeof(HABPacketGPSData));
 			HABPacketGPSData.packetType = GPS_GGA_2;
@@ -99,7 +100,7 @@ GPS_StatusTypeDef processGPS(UART_HandleTypeDef *huart)
 		///////////////////////////////////////////
 
 		memset(&HABPacketGPSData, '\0', sizeof(HABPacketGPSData));
-		if(rmcLen >  GPS_BUF_DATA_SIZE+1)
+		if(rmcLen >  GPS_BUF_DATA_SIZE)
 		{
 			HABPacketGPSData.packetType = GPS_RMC_1;
 			HABPacketGPSData.gpsDataLen = GPS_BUF_DATA_SIZE;
@@ -114,7 +115,7 @@ GPS_StatusTypeDef processGPS(UART_HandleTypeDef *huart)
 		memcpy(txBuf,&HABPacketGPSData,sizeof(HABPacketGPSData));
 		HAL_Status =  radioTxData(txBuf,HABPacketGPSData.gpsDataLen+GPS_HDRF_DATA_SIZE);
 		HAL_Delay(PROTOCOL_DELAY);
-		if(ggaLen >  GPS_BUF_DATA_SIZE+1)
+		if(rmcLen >  GPS_BUF_DATA_SIZE)
 		{
 			memset(&HABPacketGPSData, '\0', sizeof(HABPacketGPSData));
 			HABPacketGPSData.packetType = GPS_RMC_2;
