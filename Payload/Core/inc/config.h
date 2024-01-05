@@ -8,7 +8,7 @@
 #ifndef INC_CONFIG_H_
 #define INC_CONFIG_H_
 
-#define TEST_MODE
+//#define TEST_MODE
 
 #define VERSION_INFO ((char *)"Payload Version 1.2")
 
