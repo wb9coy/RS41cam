@@ -270,7 +270,7 @@ int main(void)
 		sendInternalTemperatureInfo = 0;
 	}
 
-	//sendExternalTemperatureInfo = 1;
+#ifdef EXTTEMPREFFREQ
 	if(sendExternalTemperatureInfo)
 	{
 		if(tempClockEnabled == 0)
@@ -281,7 +281,7 @@ int main(void)
 			tempClockEnabled = 1;
 			tempClockStable  = 0;
 		}
-		if(tempClockStable > 5)
+		if(tempClockStable > 6)
 		{
 			//HAL_Delay(1000);
 			processExternalTemp(&rsDriver,frequency);
@@ -294,7 +294,9 @@ int main(void)
 			sendHumidityInfo            = 1;
 		}
 	}
+#endif
 
+#ifdef HUMREFFREQ
 	//sendHumidityInfo = 0;
 	if(sendHumidityInfo)
 	{
@@ -318,23 +320,28 @@ int main(void)
 			humClockEnabled  = 0;
 		}
 	}
+#endif
 
 	if(sendPressureInfo)
 	{
-		HAL_Status = clearRadio();
-		__HAL_RCC_SYSCLK_CONFIG(RCC_SYSCLKSOURCE_HSI);
-		processPressure(&rsDriver);
-		__HAL_RCC_SYSCLK_CONFIG(RCC_SYSCLKSOURCE_HSE);
-		HAL_Status = setRadio();
-		tempClockStable  = 0;
-		humClockStable   = 0;
-		sendPressureInfo = 0;
+		//wait for external temp
+		if(tempClockEnabled == 0)
+		{
+			HAL_Status = clearRadio();
+			__HAL_RCC_SYSCLK_CONFIG(RCC_SYSCLKSOURCE_HSI);
+			processPressure(&rsDriver);
+			__HAL_RCC_SYSCLK_CONFIG(RCC_SYSCLKSOURCE_HSE);
+			HAL_Status = setRadio();
+			sendPressureInfo = 0;
+		}
 	}
 
-#ifdef TEST_MODE
-	processTestCam(&rsDriver);
-#else
-	processCAM(&huart3,&rsDriver);
+#ifndef CALEXTTEMP
+	#ifdef TEST_MODE
+		processTestCam(&rsDriver);
+	#else
+		processCAM(&huart3,&rsDriver);
+	#endif
 #endif
 
 
@@ -737,7 +744,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
 
   if (htim->Instance == TIM7)
-  {	  frequency = pulseCount;
+  {
+	  frequency = pulseCount;
   	  pulseCount = 0;
 
 	  //collectGPSData = 1;
@@ -780,15 +788,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		  sendInternalTemperatureInfo = 1;
 	  }
 
+#ifdef CALEXTTEMP
+	  sendExternalTemperatureInfo = 1;
+#else
 	  if(oneSecTic % 30 == 0)
 	  {
 		  sendExternalTemperatureInfo = 1;
 	  }
+#endif
 
-//	  if(oneSecTic % 45 == 0)
-//	  {
-//		  sendHumidityInfo = 1;
-//	  }
+	  if(oneSecTic % 45 == 0)
+	  {
+		  sendHumidityInfo = 1;
+	  }
 
 	  if(oneSecTic % 20 == 0)
 	  {
