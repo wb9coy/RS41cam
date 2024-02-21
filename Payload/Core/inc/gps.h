@@ -11,7 +11,7 @@
 #include "stm32f1xx_hal.h"
 
 #define GPS_UART_BUF_DATA_SIZE    82
-#define UART_DATA_SIZE 		     300
+#define UART_DATA_SIZE 		     480
 
 typedef enum
 {

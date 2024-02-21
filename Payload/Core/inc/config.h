@@ -10,7 +10,7 @@
 
 //#define TEST_MODE
 
-#define VERSION_INFO ((char *)"Payload Version 1.2")
+#define VERSION_INFO ((char *)"Payload Version 1.3")
 
 #define CALL_SIGN ((char *)"W6SUN")
 

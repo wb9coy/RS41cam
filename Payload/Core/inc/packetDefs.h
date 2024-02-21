@@ -15,7 +15,7 @@
 
 #define SENSOR_BUF_DATA_SIZE	  58
 #define GPS_BUF_DATA_SIZE		  61
-#define GPS_HDRF_DATA_SIZE		  3
+#define GPS_HDR_DATA_SIZE		  3
 #define IMG_BUF_DATA_SIZE		  56
 #define CALL_SIGN_SIZE		      12
 #define INFO_DATA_SIZE		      32
